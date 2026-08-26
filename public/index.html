@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hebeluna Express | Rastreo de paquetes</title>
+<meta name="description" content="Consulta el estado de tu paquete con Hebeluna Express: recibido en Miami, en tránsito o listo para entrega en Nicaragua." />
+<link rel="icon" type="image/png" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <img src="assets/logo.png" alt="Hebeluna Express" class="logo" />
+    <h1>Rastree su envío</h1>
+    <p class="subtitle">Ingrese su número de tracking o de guía para ver el estado de su paquete</p>
+
+    <form id="track-form" class="track-form" autocomplete="off">
+      <input
+        id="track-input"
+        type="text"
+        inputmode="text"
+        placeholder="Ej. 1Z247V0W0369154933 o su número de guía"
+        aria-label="Número de tracking o guía"
+        required
+      />
+      <button type="submit" id="track-btn">
+        <span class="btn-label">Rastrear</span>
+        <span class="btn-spinner" hidden aria-hidden="true"></span>
+      </button>
+    </form>
+  </div>
+</header>
+
+<main class="container">
+
+  <section id="result" class="result" hidden aria-live="polite">
+    <div class="result-header">
+      <div>
+        <p class="result-tracking-label">Número consultado</p>
+        <p id="result-tracking" class="result-tracking-value"></p>
+      </div>
+      <span id="result-badge" class="badge"></span>
+    </div>
+
+    <ol id="progress" class="progress" aria-label="Progreso del envío">
+      <li data-stage="1"><span class="dot"></span><span class="step-label">Recibido en Miami</span></li>
+      <li data-stage="2"><span class="dot"></span><span class="step-label">En tránsito</span></li>
+      <li data-stage="3"><span class="dot"></span><span class="step-label">Listo para entrega</span></li>
+    </ol>
+
+    <div class="result-details" id="result-details">
+      <!-- se llena dinámicamente -->
+    </div>
+
+    <div class="events" id="events-wrap" hidden>
+      <h3>Historial</h3>
+      <ul id="events-list"></ul>
+    </div>
+  </section>
+
+  <section id="not-found" class="not-found" hidden>
+    <p>No encontramos ese número. Verifique que esté completo y sin espacios, o inténtelo de nuevo en unos minutos si el paquete es muy reciente.</p>
+  </section>
+
+  <section id="error-box" class="error-box" hidden>
+    <p id="error-message"></p>
+  </section>
+
+  <section class="notices">
+    <button id="notices-toggle" class="notices-toggle" aria-expanded="false" aria-controls="notices-panel">
+      <span>📦 Avisos importantes para nuestros clientes</span>
+      <span class="chevron" aria-hidden="true">▾</span>
+    </button>
+
+    <div id="notices-panel" class="notices-panel" hidden>
+      <details>
+        <summary>⏱️ Tiempos de entrega</summary>
+        <p>Aéreo: 3–5 días hábiles desde que el paquete llega a nuestra bodega en Miami. Marítimo: hasta 25 días hábiles desde su recepción en bodega. Los días hábiles no incluyen sábados, domingos ni feriados, y en temporadas de alta demanda estos tiempos pueden extenderse.</p>
+      </details>
+      <details>
+        <summary>📍 Un "Delivered" del transportista no es lo mismo que "recibido en bodega"</summary>
+        <p>Aunque USPS, UPS, FedEx u otro transportista marque el envío como entregado, el paquete debe pasar primero por nuestro proceso de recepción, identificación y registro en bodega antes de aparecer como recibido con Hebeluna Express. Si el tracking del transportista ya dice "Delivered" pero aún no aparece aquí, no se trata de un paquete perdido: hay que esperar el procesamiento de bodega.</p>
+      </details>
+      <details>
+        <summary>🚨 Mercancías restringidas (Hazmat)</summary>
+        <p>Productos como baterías de litio, aerosoles, líquidos, químicos, pinturas o ciertos cosméticos pueden requerir manejo y documentación especial. Por esto pueden tardar más de lo habitual y estar sujetos a restricciones o recargos, según el transportista y el producto.</p>
+      </details>
+      <details>
+        <summary>🔋 Electrónicos</summary>
+        <p>Los productos electrónicos pueden tener una tarifa distinta a la tarifa regular por libra, según sus características, dimensiones, batería y forma de transporte.</p>
+      </details>
+      <details>
+        <summary>📏 Peso y empaque</summary>
+        <p>El cobro se calcula según el peso oficial registrado por nuestra bodega/transportista; en algunos envíos aplica peso volumétrico. El peso facturable incluye el embalaje (caja y protección), no solo el producto.</p>
+      </details>
+      <details>
+        <summary>🧾 Tracking correcto</summary>
+        <p>Es responsabilidad del cliente enviarnos el número de tracking correcto después de su compra. Sin este dato es difícil identificar y darle seguimiento al paquete.</p>
+      </details>
+      <details>
+        <summary>🏷️ Dirección de envío</summary>
+        <p>Al comprar, use exactamente la dirección y el código de identificación asignado por Hebeluna Express. Un error en el nombre, dirección o código puede causar retrasos.</p>
+      </details>
+      <details>
+        <summary>🛍️ Compras de varias tiendas</summary>
+        <p>Cuando es posible, consolidamos varios paquetes pendientes en una sola entrega, siempre que los tiempos de almacenamiento y el tipo de producto lo permitan.</p>
+      </details>
+      <details>
+        <summary>🚚 Entrega en Nicaragua</summary>
+        <p>Una vez disponible en Nicaragua, la entrega se coordina según la modalidad contratada. El tiempo puede variar según el departamento y el operador logístico.</p>
+      </details>
+      <details>
+        <summary>💰 Pagos</summary>
+        <p>El servicio de importación se cancela según la modalidad de pago acordada. Hebeluna Express no maneja crédito, salvo modalidades previamente establecidas.</p>
+      </details>
+      <details>
+        <summary>⚠️ Retrasos externos</summary>
+        <p>Hebeluna Express no controla los retrasos causados por transportistas, tiendas, aduanas, clima, temporada alta u otras circunstancias externas.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Hebeluna Express &middot; <span id="year"></span></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
